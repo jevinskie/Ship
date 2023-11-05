@@ -6,6 +6,7 @@ and __main__.py is usually entry when calling from python
 """
 
 import sys
+import urllib.parse
 __version__ = "0.0.3.0"
 if sys.version_info >= (3, 0):
     # Third party package
@@ -114,8 +115,9 @@ if LINK_OPTION:
 else:
     logger.debug("Ship sharing file")
     FILENAME = check_filename(MAIN, logger.debug)
-    RESURL = FILENAME
-    ABS_FILEPATH = Path(FILENAME).resolve()
+    FILENAME = Path(FILENAME).expanduser()
+    RESURL = FILENAME.name
+    ABS_FILEPATH = FILENAME.resolve()
     logger.debug("FILEPATH:{}".format(ABS_FILEPATH))
     MIMETYPE, TYPE = mimetype_and_type(ABS_FILEPATH, logger.debug)
     FILE = read_file(ABS_FILEPATH, logger.debug)
@@ -129,7 +131,7 @@ if os.name == "nt" and os.path.isabs(MAIN) is True:
     RESURL = winfileurl(FILENAME)
     FILENAME = RESURL
 else:
-    RESURL = "/{}".format(FILENAME)
+    RESURL = "/{}".format(urllib.parse.quote(FILENAME.name))
 
 def HTTP_handler(*args):
     """Description: create HTTP handler with *args given by http.server.HTTPServer
@@ -156,7 +158,7 @@ def HTTP_handler(*args):
         else:
             #File Server route method is used if statement method
             logger.debug("resource url {}, resource path {}".format(RESURL, FILENAME))
-            HTTP_File_Server(FILENAME, RESURL, FILE, ICO, JS_FILENAME, HOST, PORT, MIMETYPE, CSS_FILENAME, __version__, logger.debug, *args)
+            HTTP_File_Server(FILENAME.name, RESURL, FILE, ICO, JS_FILENAME, HOST, PORT, MIMETYPE, CSS_FILENAME, __version__, logger.debug, *args)
     except BaseException as e:
         logger.debug("HTTP_handler: {}".format(e), level="error")
         _, _, exc_tb = sys.exc_info()

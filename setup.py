@@ -44,7 +44,7 @@ with open('requirements.txt') as f:
 
 setup(
     name="shipapp",
-    version="0.0.3.1",
+    version="0.0.3.2",
     author="Yusuf Ahmed",
     author_email="yusufahmed172@gmail.com",
     packages=find_packages(exclude=['test_files']),
@@ -52,7 +52,7 @@ setup(
     long_description=read('README.md'),
     long_description_content_type="text/markdown",
     url="https://github.com/yusuf8ahmed/Ship",
-    install_requires=['qrcode==6.1','pillow', 'pyngrok', 'loguru'],
+    install_requires=['qrcode>=7.4.2', 'pillow', 'pyngrok', 'loguru'],
     package_data={
         'ship': ['*.ico', "*.js", "*.css"],
     },

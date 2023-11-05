@@ -5,6 +5,8 @@
 # source env/bin/activate
 import sys 
 
+from pathlib import Path
+
 if sys.version_info >= (3, 0):  
     # Third party package
     import qrcode  # load QR code
@@ -57,11 +59,13 @@ def ShipIt(filename, argport=9999, auto_open=False, qr_option=False, qr_display=
     qr = qrcode.QRCode()
     host = local_address()
     port = argport
-    abs_filepath = os.path.abspath(filename)
-    filename_inner = check_filename(abs_filepath)
+    filename = Path(filename).expanduser()
+    assert filename.exists()
+    filename_inner = filename.name
     file_inner = read_file(filename_inner)
     mimetype_inner, _ = mimetype_and_type(filename_inner)
     ico = read_file_ico(ico_filename)
+    print(f"filename: {filename} filename_inner: {filename_inner}")
     
     def HTTP_handler(*args):
         """

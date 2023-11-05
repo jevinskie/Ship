@@ -2,6 +2,7 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer # Basic http server
 from pathlib import Path, PurePath
 import os
+import urllib.parse
 
 # local imports: HTML templates
 if str(__package__) == "ship":
@@ -86,8 +87,11 @@ class HTTP_File_Server(BaseHTTPRequestHandler):
         self.log(mess)
         self.log_message(mess)
         
-    def do_GET(self):             
-        if self.path == "{}".format(self.RESURL):
+    def do_GET(self):
+        print(f"self.path: {self.path} self.RESURL: {self.RESURL} /path: {Path('/') / self.path}")
+        match = str(self.path) == self.RESURL
+        print(f"match: {match}")
+        if match:
             try:
                 self.class_log("Loading {}, {}".format(self.FILENAME, self.MIMETYPE[0]))
                 self._set_response(200, self.MIMETYPE[0], len(self.FILE))
@@ -136,6 +140,7 @@ class HTTP_File_Server(BaseHTTPRequestHandler):
                         "VERSION": self.VERSION
                     }
                     )
+                print(f"res:\n{res}")
                 self._set_response(200, "text/html", len(res.encode('utf-8')))
                 self.wfile.write(res.encode())
             except BaseException as e:
